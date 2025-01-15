@@ -1,42 +1,42 @@
-'use client'
+'use client';
 
-import { useChat } from 'ai/react'
-import { useState } from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Bot, Send, User } from 'lucide-react'
-import { toast } from 'sonner'
+import { useChat } from 'ai/react';
+import { useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Bot, Send, User } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function Chat() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const { messages, input, handleInputChange, handleSubmit, error } = useChat({
+  const { messages, input, handleInputChange, handleSubmit } = useChat({
     onError: (err) => {
       console.error('Chat error:', err);
       setErrorMessage(err.message || 'An unknown error occurred');
       toast.error('An error occurred while sending your message');
     },
-  })
-  const [isTyping, setIsTyping] = useState(false)
+  });
+  const [isTyping, setIsTyping] = useState(false);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
     if (input.trim()) {
-      setIsTyping(true)
-      setErrorMessage(null)
+      setIsTyping(true);
+      setErrorMessage(null);
       try {
-        await handleSubmit(e)
+        await handleSubmit(e);
         console.log('Message sent successfully');
       } catch (err) {
         console.error('Error sending message:', err);
         setErrorMessage(err instanceof Error ? err.message : 'Failed to send message');
         toast.error('Failed to send message');
       } finally {
-        setIsTyping(false)
+        setIsTyping(false);
       }
     }
-  }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 p-4">
@@ -50,13 +50,14 @@ export default function Chat() {
         <CardContent className="p-0">
           <ScrollArea className="h-[60vh]">
             <div className="flex flex-col gap-4 p-4">
-              {messages.map(m => (
+              {messages.map((m) => (
                 <div
                   key={m.id}
                   className={`flex items-start gap-3 ${m.role === 'user' ? 'flex-row-reverse' : ''}`}
                 >
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 
-                    ${m.role === 'user' ? 'bg-blue-500' : 'bg-gray-200'}`}
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 
+                      ${m.role === 'user' ? 'bg-blue-500' : 'bg-gray-200'}`}
                   >
                     {m.role === 'user' ? (
                       <User className="w-5 h-5 text-white" />
@@ -110,11 +111,8 @@ export default function Chat() {
         </CardFooter>
       </Card>
       <div className="fixed bottom-4 right-4">
-        <div className="text-xs text-gray-500">
-          Powered by Groq
-        </div>
+        <div className="text-xs text-gray-500">Powered by Groq</div>
       </div>
     </div>
-  )
+  );
 }
-
